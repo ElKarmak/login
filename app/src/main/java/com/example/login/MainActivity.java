@@ -2,57 +2,54 @@ package com.example.login;
 
 
 
-
-import static com.example.login.usuariocontroller.obtenerRol;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class MainActivity extends AppCompatActivity {
-    private String user;
-    private String miButton;
-    private String password;
+public class MainActivity extends AppCompatActivity  implements View.OnClickListener{
+    EditText user, password;
+    Button loginEntrar;
+usingUsuario doa;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        user=(EditText)findViewById(R.id.usermane_input);
+        password=(EditText)findViewById(R.id.password_input);
+        loginEntrar=(Button)findViewById(R.id.loginEntrar);
+        doa=new usingUsuario(this);
+        loginEntrar.setOnClickListener(this);
+    }
 
-        Button button = findViewById(R.id.login_btn);
+    @Override
+    public void onClick(View v){
+        int i = v.getId();
+        if (i == R.id.loginEntrar) {
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                user= String.valueOf(findViewById(R.id.password_input));
-                password= String.valueOf(findViewById(R.id.password_input));
+          String u=user.getText().toString();
+          String p=password.getText().toString();
 
-                boolean Credenciales= usuariocontroller.verificarCredenciales(user,password);
+          if (u.equals("")&& p.equals("")){
+              Toast.makeText(this, "ERROR CAMPOS VACÍOS!", Toast.LENGTH_SHORT).show();
+          }else  if(doa.login(u,p)==1){
+              user ux=doa.getUser(u,p);
+              Toast.makeText(this, "DATOS CARERCTOS!", Toast.LENGTH_SHORT).show();
+              Intent inteto=new Intent(MainActivity.this,welcome.class);
+              inteto.putExtra("id", ux.getId());
+              startActivity(inteto);
+              finish();
+          }else {
+              Toast.makeText(this, "USUARIO y/O PASSWORD incorrectos!", Toast.LENGTH_SHORT).show();
+          }
 
-                if (Credenciales){
-                    String rol= obtenerRol(user);
-                    Intent intetar= new Intent(MainActivity.this, usuariocontroller.class);
-                    MainActivity.this.startActivity(intetar);
-
-                }else{
-
-                    Toast.makeText(MainActivity.this, "Error de usuario", Toast.LENGTH_SHORT).show();
-                }
-
-
-
-
-            }
-        });
-
-
-
+        }
 
     }
+
 }
